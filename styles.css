@@ -1,0 +1,115 @@
+.chatcomps-color-popout{
+    width: 300px;
+    height: 150px;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: var(--elevation-high);
+ }
+
+.chatcomps-color-header{
+    display: flex;
+    /* justify-content: center; */
+    background-color: #202225;
+    color: var(--text-normal);
+    padding: 15px;
+}
+
+.chatcomps-color-header-item {
+    padding: 4px 7px;
+    margin: 0px 5px;
+    border: 1px solid var(--background-tertiary);
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.chatcomps-color-header-item-selected{
+    background-color: var(--background-primary);
+}
+
+.chatcomps-color-header-item:hover:not(.chatcomps-color-header-item-selected){
+    background-color: var(--background-modifier-hover);
+}
+
+.chatcomps-color-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.chatcomps-color-info {
+    height: 60px;
+}
+
+.chatcomps-color-info-title {
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-top: 3px;
+    color: var(--channels-default);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.chatcomps-color-info-value {
+    background-color: var(--activity-card-background);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 5px 8px;
+    color: var(--interactive-active);
+    width: 210px;
+    height: 35px;
+    margin-top: -2px;
+    text-overflow: clip;
+}
+
+.chatcomps-color-info-value:focus{
+    border: 1px solid var(--brand-experiment);
+}
+
+.chatcomps-color-info-copy {
+    max-width: 20px !important;
+    width: 20px !important;
+    opacity: 1;
+}
+
+.chatcomps-color-info-copy:focus {
+    background-color: green;
+}
+
+.chatcomps-color-info-copy:focus:hover {
+    background-color: green;
+}
+
+.chatcomps-color-info-copy-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    opacity: 1;
+}
+
+.chatcomps-color-preview {
+    background-color: var(--color);
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.chatcomps-color-text {
+    color: var(--color) !important;
+    background-color: var(--backgroundColor) !important;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.chatcomps-color-text:hover {
+    text-decoration: none !important;
+    color: var(--hoveredColor) !important;
+    background-color: var(--color) !important;
+}
