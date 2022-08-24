@@ -1,58 +1,55 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModule } = require('powercord/webpack');
+const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
-const StringPart = require('./components/StringPart');
+const Color = require('./components/Color');
+
+const NONTEXT_PATTERN = /\b(0x|(?:rgb|hsl)a?\b)/;
+const LOOKBEHIND_PATTERN = /\W$/;
+const COLOR_PATTERN = /^((?:#|0x)(?:[a-f0-9]{8}|[a-f0-9]{6}|[a-f0-9]{3})|(?:rgb|hsl)a?\([^\)]*?\))(?!\w)/i;
 
 module.exports = class ChatComponents extends Plugin {
     async startPlugin() {
         this.loadStylesheet('styles.css');
 
-		const parser = await getModule(['parse', 'parseTopic']);
-        
-		inject('chatcomponents', parser, 'parse', (args, res = {}) => { // *steals asportnoy's tone-indicator*
-    		if (!Array.isArray(res)) return res;
-            
-            // Loop through each part of the message
-            return res.map(el => {
-                if (typeof el !== 'string') {
-                    if (el?.props?.parts) { // face tone-indicators
-                        return el; //todo
-                    }
+        const parser = this.parser = await getModule(['parse', 'parseTopic']);
 
-                    return el;
+        // Add rule (See: https://github.com/Khan/simple-markdown#extension-overview)
+        parser.defaultRules.chatComponentsColor = {
+            order: parser.defaultRules.text.order - 1,
+            match: (source, state) => {
+                if (state.prevCapture && !LOOKBEHIND_PATTERN.test(state.prevCapture)) {
+                    return null;
                 }
-
-                const colors = el.split(/(?<!\w)((?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6}|[a-f0-9]{8})|(?:rgb|hsl)a?\(.*?\))(?!\w)/gi);
-
-                if (!colors) return el;
-
-                const res = [];
-                let error = false;
-
-                for (const [i, color] of colors.entries()) {
-                    if (typeof color !== 'string') continue;
-
-                    if (i % 2 === 0) {
-                        if (error) res[res.length - 1] += color;
-                        else res.push(color);
-                    } else if (color !== null) {
-                        res.push(color);
-                        error = false;
-                    } else {
-                        res[res.length - 1] += color;
-                        error = true;
-                    }
+                return COLOR_PATTERN.exec(source);
+            },
+            parse: match => {
+                return {
+                    color: match[1],
+                    content: match[0]
                 }
+            },
+            react: node => Color(node.color),
+        };
 
-                return React.createElement(StringPart, {
-                    parts: res,
-                });
-            });
-        });
+        this.refreshParser();
+
+        // Force simple-markdown's "text" rule to stop eating the text we need
+        inject('color-components-text', parser.defaultRules.text, 'match', (args, res) => {
+            if (!res) return res
+            res[0] = res[0].split(NONTEXT_PATTERN).filter(Boolean)[0]
+            return res
+        })
     }
 
     pluginWillUnload() {
-        uninject('chatcomponents');
+        delete this.parser.defaultRules.chatComponentsColor;
+        this.refreshParser();
+        uninject('color-components-text');
+    }
+
+    refreshParser() {
+        // Recreate parser with new rules
+        this.parser.parse = this.parser.reactParserFor(this.parser.defaultRules);
     }
 }
