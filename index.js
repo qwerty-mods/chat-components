@@ -2,7 +2,7 @@ const { Plugin } = require('powercord/entities');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
-const StringPart = require('./components/StringPart');
+const Color = require('./components/Color');
 
 module.exports = class ChatComponents extends Plugin {
     async startPlugin() {
