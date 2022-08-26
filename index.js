@@ -3,6 +3,7 @@ const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 const Color = require('./components/Color');
+const Settings = require('./components/Settings');
 
 const NONTEXT_PATTERN = /\b(0x|(?:rgb|hsl)a?\b)/;
 const LOOKBEHIND_PATTERN = /\W$/;
@@ -11,6 +12,12 @@ const COLOR_PATTERN = /^((?:#|0x)(?:[a-f0-9]{8}|[a-f0-9]{6}|[a-f0-9]{3})|(?:rgb|
 module.exports = class ChatComponents extends Plugin {
     async startPlugin() {
         this.loadStylesheet('styles.css');
+
+        powercord.api.settings.registerSettings(this.entityID, {
+            category: 'chat-components',
+            label: 'Chat Components',
+            render: Settings
+        });
 
         const parser = this.parser = await getModule(['parse', 'parseTopic']);
 
@@ -29,7 +36,7 @@ module.exports = class ChatComponents extends Plugin {
                     content: match[0]
                 }
             },
-            react: node => Color(node.color),
+            react: node => this.settings.get('color-comps-main', true) ? Color(node.color) : node.content,
         };
 
         this.refreshParser();
@@ -46,6 +53,7 @@ module.exports = class ChatComponents extends Plugin {
         delete this.parser.defaultRules.chatComponentsColor;
         this.refreshParser();
         uninject('color-components-text');
+        powercord.api.settings.unregisterSettings(this.entityID);
     }
 
     refreshParser() {
