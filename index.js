@@ -7,7 +7,7 @@ const Settings = require('./components/Settings');
 
 const NONTEXT_PATTERN = /\b(0x|(?:rgb|hsl)a?\b)/;
 const LOOKBEHIND_PATTERN = /\W$/;
-const COLOR_PATTERN = /^((?:#|0x)(?:[a-f0-9]{8}|[a-f0-9]{6}|[a-f0-9]{3})|(?:rgb|hsl)a?\([^\)]*?\))(?!\w)/i;
+const COLOR_PATTERN = /^((?:#|0x)(?:[a-f0-9]{8}|[a-f0-9]{6}|[a-f0-9]{3})|(?:rgb|hsl)a?\([^\)]*?\))(?!\w)(?!]\((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\))/i;
 
 module.exports = class ChatComponents extends Plugin {
     async startPlugin() {
