@@ -16,7 +16,7 @@ function Color(color) {
 				{...props}
 				className='chatcomps-color-text'
 				style={{
-					'--color': color,
+					'--color': color.replace("0x", "#"),
 					'--hoveredColor': _numberToTextColor(color),
 					'--backgroundColor': _parseColor(color, 0.1)[4]
 				}}

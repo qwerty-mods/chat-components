@@ -3,6 +3,7 @@ const { getModule } = require('powercord/webpack');
 const ColorUtils = getModule([ 'isValidHex' ], false);
 
 function _parseColor (c, alpha = 1) { // Thanks to Ven
+	c = c.replace('0x', '#')
     const e = document.createElement("span");
     e.style.color = c;
     document.head.appendChild(e);
